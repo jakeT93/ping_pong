@@ -9,6 +9,8 @@
 
 class GamePlayScene : public cocos2d::Scene
 {
+
+    void CreateAndAddRandomPingPongBall(cocos2d::Vec2 origin, cocos2d::Size visibleSize);
 public:
     static cocos2d::Scene* createScene();
 

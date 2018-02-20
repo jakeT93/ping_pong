@@ -3,6 +3,7 @@
 //
 
 #include "GamePlayScene.h"
+#include "PingPongBall.h"
 
 USING_NS_CC;
 
@@ -16,6 +17,16 @@ static void problemLoading(const char* filename)
 {
     printf("Error while loading: %s\n", filename);
     printf("Depending on how you compiled you might have to add 'Resources/' in front of filenames in HelloWorldScene.cpp\n");
+}
+
+void GamePlayScene::CreateAndAddRandomPingPongBall(Vec2 origin, cocos2d::Size visibleSize)
+{
+    auto ball = PingPongBall::create(rand()%10);
+    ball->setPosition(Vec2(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y));
+    Rect visibleRect = Rect(0,0,visibleSize.width, visibleSize.height);
+    ball->SetBounds(visibleRect);
+    ball->setScale(0.5f);
+    this->addChild(ball);
 }
 
 // on "init" you need to initialize your instance
@@ -59,42 +70,30 @@ bool GamePlayScene::init()
     menu->setPosition(Vec2::ZERO);
     this->addChild(menu, 1);
 
-    /////////////////////////////
-    // 3. add your codes below...
+    CreateAndAddRandomPingPongBall(origin, visibleSize);
 
-    // add a label shows "Hello World"
-    // create and initialize a label
+    auto listener1 = EventListenerTouchOneByOne::create();
 
-    auto label = Label::createWithTTF("Ping Pong", "fonts/Marker Felt.ttf", 24);
-    if (label == nullptr)
-    {
-        problemLoading("'fonts/Marker Felt.ttf'");
-    }
-    else
-    {
-        // position the label on the center of the screen
-        label->setPosition(Vec2(origin.x + visibleSize.width/2,
-                                origin.y + visibleSize.height - label->getContentSize().height));
+// trigger when you push down
+    listener1->onTouchBegan = [](Touch* touch, Event* event){
+        // your code
+        return true; // if you are consuming it
+    };
 
-        // add the label as a child to this layer
-        this->addChild(label, 1);
-    }
+// trigger when moving touch
+    listener1->onTouchMoved = [](Touch* touch, Event* event){
+        // your code
+    };
 
-    // add "HelloWorld" splash screen"
+// trigger when you let up
+    listener1->onTouchEnded = [=](Touch* touch, Event* event){
+        CreateAndAddRandomPingPongBall(origin, visibleSize);
+    };
 
-    auto sprite = Sprite::create("HelloWorld.png");
-    if (sprite == nullptr)
-    {
-        problemLoading("'HelloWorld.png'");
-    }
-    else
-    {
-        // position the sprite on the center of the screen
-        sprite->setPosition(Vec2(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y));
+// Add listener
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(listener1, this);
 
-        // add the sprite as a child to this layer
-        this->addChild(sprite, 0);
-    }
+
     return true;
 }
 
@@ -102,16 +101,6 @@ bool GamePlayScene::init()
 void GamePlayScene::menuCloseCallback(Ref* pSender)
 {
     //Close the cocos2d-x game scene and quit the application
-    Director::getInstance()->end();
-
-#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
-    exit(0);
-#endif
-
-    /*To navigate back to native iOS screen(if present) without quitting the application  ,do not use Director::getInstance()->end() and exit(0) as given above,instead trigger a custom event created in RootViewController.mm as below*/
-
-    //EventCustom customEndEvent("game_scene_close_event");
-    //_eventDispatcher->dispatchEvent(&customEndEvent);
-
+    Director::getInstance()->popScene();
 
 }

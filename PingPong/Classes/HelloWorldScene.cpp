@@ -1,5 +1,6 @@
 #include "HelloWorldScene.h"
 #include "ui/UIButton.h"
+#include "GamePlayScene.h"
 
 USING_NS_CC;
 
@@ -78,10 +79,10 @@ bool HelloWorld::init()
     }
 
     // add "HelloWorld" splash screen"
-    auto imgBtn = ui::Button::create("HelloWorld.png", "HelloWorld.png", "HelloWorld.png");
+    auto imgBtn = ui::Button::create("start.png", "start.png", "start.png");
     if (imgBtn == nullptr)
     {
-        problemLoading("'pingpong.png'");
+        problemLoading("'start.png'");
     }
     else
     {
@@ -93,7 +94,10 @@ bool HelloWorld::init()
                                              case ui::Widget::TouchEventType::BEGAN:
                                                  break;
                                              case ui::Widget::TouchEventType::ENDED:
-                                                log("Button pressed!!!");
+                                             {
+                                                 log("Button pressed!!!");
+                                                 _director->pushScene(GamePlayScene::createScene());
+                                             }
                                                  break;
                                              default:
                                                  break;

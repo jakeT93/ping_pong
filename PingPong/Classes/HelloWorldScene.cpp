@@ -1,5 +1,5 @@
 #include "HelloWorldScene.h"
-#include "SimpleAudioEngine.h"
+#include "ui/UIButton.h"
 
 USING_NS_CC;
 
@@ -62,7 +62,7 @@ bool HelloWorld::init()
     // add a label shows "Hello World"
     // create and initialize a label
 
-    auto label = Label::createWithTTF("Hello World", "fonts/Marker Felt.ttf", 24);
+    auto label = Label::createWithTTF("Ping Pong", "fonts/Marker Felt.ttf", 24);
     if (label == nullptr)
     {
         problemLoading("'fonts/Marker Felt.ttf'");
@@ -78,18 +78,32 @@ bool HelloWorld::init()
     }
 
     // add "HelloWorld" splash screen"
-    auto sprite = Sprite::create("HelloWorld.png");
-    if (sprite == nullptr)
+    auto imgBtn = ui::Button::create("HelloWorld.png", "HelloWorld.png", "HelloWorld.png");
+    if (imgBtn == nullptr)
     {
-        problemLoading("'HelloWorld.png'");
+        problemLoading("'pingpong.png'");
     }
     else
     {
+        imgBtn->setTitleText("Ping Pong");
+        imgBtn->addTouchEventListener([&](Ref* sender, ui::Widget::TouchEventType type)
+                                      {
+                                         switch(type)
+                                         {
+                                             case ui::Widget::TouchEventType::BEGAN:
+                                                 break;
+                                             case ui::Widget::TouchEventType::ENDED:
+                                                log("Button pressed!!!");
+                                                 break;
+                                             default:
+                                                 break;
+                                         }
+                                      });
         // position the sprite on the center of the screen
-        sprite->setPosition(Vec2(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y));
+        imgBtn->setPosition(Vec2(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y));
 
         // add the sprite as a child to this layer
-        this->addChild(sprite, 0);
+        this->addChild(imgBtn, 0);
     }
     return true;
 }
